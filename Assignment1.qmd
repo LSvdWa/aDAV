@@ -5,10 +5,11 @@ editor: visual
 authors:
 - "Friso Harff (7526946)"
 - "Leander van der Waal (7180063)"
-- 
+- "Marije Jansen (1277596)"
 - 
 date: "2026-05-27"
 ---
+
 ```{r}
 #| warning: false
 # Initialization
@@ -23,6 +24,7 @@ library(caret)
 library(GGally)
 
 ```
+
 ## Add data
 
 When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
