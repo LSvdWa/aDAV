@@ -22,7 +22,7 @@ library(pROC)
 library(regclass)
 library(caret)
 library(GGally)
-
+library(glue)
 ```
 
 ## Add data
@@ -37,8 +37,53 @@ View(data)
 Explore data
 
 ```{r}
-#| echo: false
-2 * 2
+numeric_cols <- names(data)[sapply(data, is.numeric)]
+for (col_name in numeric_cols) {
+  hist(data[[col_name]],
+       main = glue("Histogram of {col_name}"),
+       xlab = glue("Values of {col_name}"),
+       col = "lightblue",
+       border = "white")
+}
+```
+
+```{r}
+for (column_1 in numeric_cols) {
+  for (column_2 in numeric_cols) {
+    if (column_1 != column_2) {
+      p <- ggplot(data, aes(x = .data[[column_1]],
+                            y = .data[[column_2]])) +
+        geom_point() +
+        labs(
+          title = paste(column_2, "vs", column_1),
+          x = column_1,
+          y = column_2
+        )
+      
+      print(p)
+    }
+  }
+}
+
+```
+
+```{r}
+for (i in 1:length(numeric_cols)) {
+  for (j in i:length(numeric_cols)) {
+    if (numeric_cols[i] != numeric_cols[j]) {
+      p <- ggplot(data, aes(x = .data[[numeric_cols[i]]],
+                            y = .data[[numeric_cols[j]]])) +
+        geom_point() +
+        labs(
+          title = paste(numeric_cols[j], "vs", numeric_cols[i]),
+          x = numeric_cols[i],
+          y = numeric_cols[j]
+        )
+      
+      print(p)
+    }
+  }
+}
 ```
 
 Research question and fit
