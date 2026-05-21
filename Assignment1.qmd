@@ -30,44 +30,66 @@ library(glue)
 When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
 
 ```{r}
+#| warning: false
 data <- read.csv("./pokemon.csv")
-View(data)
+data$capture_rate <- as.numeric(data$capture_rate) # One NA
+
 ```
 
-Explore data
+# Explore data
+
+The dataset consists of 801 pokemon, their pokedex index, their names (english and japanese) and the following statistics:
+
+-   **percentage_male:** The percentage of the species that are male. Blank if the Pokemon is genderless. Some pokemon have fewer males than females or otherwise, like Combee, where most are male and only the females can evolve.
+
+-   **type1:** The Primary Type of the Pokemon. The types of pokemon determines what type of attacks they are weak or strong against.
+
+-   **type2:** The Secondary Type of the Pokemon. Sometimes pokemon are a combination of two types. Blank if the pokemon only has one type.
+
+-   **classification:** The Classification of the Pokemon as described by the Sun and Moon Pokedex.
+
+-   **height_m:** Height of the Pokemon in metres, between 0.1 and 14.5 m.
+
+-   **weight_kg:** The Weight of the Pokemon in kilograms, from 0.1 kg to 999.9 kg, with 20 blanks.
+
+-   **capture_rate:** Capture Rate of the Pokemon. This determines how likely a pokemon is to be caught when a pokeball is used, and sits between 3 and 255, with 1 blank. A catching rate of 255 means a guaranteed catch, while 0 means it is impossible to catch.
+
+-   **base_egg_steps:** The number of steps required to hatch an egg of the Pokemon, between 1280 and 30720 steps.
+
+-   **abilities:** A stringified list of abilities that the Pokemon is capable of having.
+
+-   **experience_growth:** The Experience Growth of the Pokemon, between 600,000 and 1,640,000. This determines how fast a pokemon levels up.
+
+-   **base_happiness:** Base Happiness of the Pokemon, between 0 and 140. Happiness is used for multiple mechanics in-game, and can be increased or decreased through certain activities. The base happiness reflects the happiness the pokemon starts out with.
+
+-   **against\_?:** Eighteen features that denote the amount of damage taken against an attack of a particular type. These are multipliers that are between 0 and 4.
+
+-   **hp:** The Base HP of the Pokemon. This is between 1 and 255 Hit Points/ Health Points.
+
+-   **attack:** The Base Attack of the Pokemon, between 5 and 185.
+
+-   **defense:** The Base Defense of the Pokemon, between 5 and 230.
+
+-   **sp_attack:** The Base Special Attack of the Pokemon, between 10 and 194.
+
+-   **sp_defense:** The Base Special Defense of the Pokemon, between 20 and 230.
+
+-   **speed:** The Base Speed of the Pokemon, between 5 and 180. Speed determines who attacks first if there are multiple pokemon and there is not another priority for deciding this.
+
+-   **generation:** The numbered generation which the Pokemon was first introduced. This dataset contains pokemon from generation 1 through 7.
+
+-   **is_legendary:** Denotes if the Pokemon is legendary. Here 0 means not legendary and 1 means it is a legendary.
 
 ```{r}
+summary(data)
+```
+
+```{r}
+#| warning: false
 numeric_cols <- names(data)[sapply(data, is.numeric)]
-for (col_name in numeric_cols) {
-  hist(data[[col_name]],
-       main = glue("Histogram of {col_name}"),
-       xlab = glue("Values of {col_name}"),
-       col = "lightblue",
-       border = "white")
-}
-```
+numeric_cols <- numeric_cols[19:length(numeric_cols)]
+numeric_cols
 
-```{r}
-for (column_1 in numeric_cols) {
-  for (column_2 in numeric_cols) {
-    if (column_1 != column_2) {
-      p <- ggplot(data, aes(x = .data[[column_1]],
-                            y = .data[[column_2]])) +
-        geom_point() +
-        labs(
-          title = paste(column_2, "vs", column_1),
-          x = column_1,
-          y = column_2
-        )
-      
-      print(p)
-    }
-  }
-}
-
-```
-
-```{r}
 for (i in 1:length(numeric_cols)) {
   for (j in i:length(numeric_cols)) {
     if (numeric_cols[i] != numeric_cols[j]) {
