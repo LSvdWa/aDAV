@@ -13,16 +13,19 @@ date: "2026-05-27"
 ```{r}
 #| warning: false
 # Initialization
-setwd(".")
+set.seed(28)
 library(dplyr)
 library(ggplot2)
 library(magrittr)
 library(kableExtra)
 library(pROC)
 library(regclass)
-library(caret)
 library(GGally)
 library(glue)
+library(ISLR)
+library(glmnet)
+library(tidyverse)
+library(caret)
 ```
 
 ## Add data
@@ -109,5 +112,85 @@ for (i in 1:length(numeric_cols)) {
 ```
 
 Research question and fit
+Research question: Is there a relationship between physical characteristics and stats? (IE is base stat total correlated with non stat related features)
+```{r}
 
+mse <- function(actual, predicted) {
+  mean((actual - predicted)^2)
+}
+
+# Edit these variables to change the model
+filtered <- data %>%
+  select(base_total,
+         base_egg_steps,
+         base_happiness,
+         capture_rate,
+         classfication,
+         experience_growth,
+         height_m,
+         is_legendary,
+         type1,
+         type2,
+         weight_kg,
+         generation)
+
+filtered <- na.omit(filtered)
+
+train <- model.matrix(base_total ~ ., data=filtered)
+
+train_test_split <- sample(1:nrow(filtered), 0.8*nrow(filtered))
+
+x_train <- train[train_test_split, ]
+test  <- train[-train_test_split, ]
+
+train_y <- data$base_total[train_test_split]
+test_y  <- data$base_total[-train_test_split]
+
+
+train <- model.matrix(base_total ~ ., data=filtered)
+
+# Lasso
+Lasso <- glmnet(x      = x_train,
+                 y      = train_y,  
+                 alpha  = 1) 
+
+# Ridge
+Ridge <- glmnet(x      = x_train,
+                 y      = train_y,    
+                 alpha  = 0)
+
+
+# Vanaf hier alles van de labs
+y_pred_lasso <- as.numeric(
+  predict(
+    Lasso,
+    newx = test,
+    s = Lasso$lambda.min[1]
+  )
+)
+y_pred_lasso
+y_pred_ridge <- as.numeric(
+  predict(
+    Ridge,
+    newx = test,
+    s = Ridge$lambda.min[1]
+  )
+)
+y_pred_ridge
+
+# Calculate MSEs
+mses <- c(
+  mse(test_y, y_pred_lasso),
+  mse(test_y, y_pred_ridge)
+)
+
+# Create a plot
+tibble(Method = as_factor(c("lasso", "rdg")), MSE = mses) %>% 
+  ggplot(aes(x = Method, y = MSE, fill = Method)) +
+  geom_bar(stat = "identity", col = "black") +
+  theme_minimal() +
+  theme(legend.position = "none") +
+  labs(title = "Comparison of test set MSE for different prediction methods") +
+  scale_fill_viridis_d() 
+```
 Present results
