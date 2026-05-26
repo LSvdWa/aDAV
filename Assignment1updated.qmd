@@ -1,0 +1,266 @@
+---
+title: "Assignment 1"
+format: html
+editor: visual
+authors:
+- "Friso Harff (7526946)"
+- "Leander van der Waal (7180063)"
+- "Marije Jansen (1277596)"
+- "Franciszek Koziołkiewicz (2383012)"
+date: "2026-05-27"
+---
+
+```{r}
+#| warning: false
+# Initialization
+set.seed(28)
+library(dplyr)
+library(ggplot2)
+library(magrittr)
+library(kableExtra)
+library(pROC)
+library(regclass)
+library(GGally)
+library(glue)
+library(ISLR)
+library(glmnet)
+library(tidyverse)
+library(caret)
+```
+
+## Add data
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+#| warning: false
+data <- read.csv("./pokemon.csv")
+data$capture_rate <- as.numeric(data$capture_rate) # One NA
+
+```
+
+# Explore data
+
+The dataset consists of 801 pokemon, their pokedex index, their names (english and japanese) and the following statistics:
+
+-   **percentage_male:** The percentage of the species that are male. Blank if the Pokemon is genderless. Some pokemon have fewer males than females or otherwise, like Combee, where most are male and only the females can evolve.
+
+-   **type1:** The Primary Type of the Pokemon. The types of pokemon determines what type of attacks they are weak or strong against.
+
+-   **type2:** The Secondary Type of the Pokemon. Sometimes pokemon are a combination of two types. Blank if the pokemon only has one type.
+
+-   **classification:** The Classification of the Pokemon as described by the Sun and Moon Pokedex.
+
+-   **height_m:** Height of the Pokemon in metres, between 0.1 and 14.5 m.
+
+-   **weight_kg:** The Weight of the Pokemon in kilograms, from 0.1 kg to 999.9 kg, with 20 blanks.
+
+-   **capture_rate:** Capture Rate of the Pokemon. This determines how likely a pokemon is to be caught when a pokeball is used, and sits between 3 and 255, with 1 blank. A catching rate of 255 means a guaranteed catch, while 0 means it is impossible to catch.
+
+-   **base_egg_steps:** The number of steps required to hatch an egg of the Pokemon, between 1280 and 30720 steps.
+
+-   **abilities:** A stringified list of abilities that the Pokemon is capable of having.
+
+-   **experience_growth:** The Experience Growth of the Pokemon, between 600,000 and 1,640,000. This determines how fast a pokemon levels up.
+
+-   **base_happiness:** Base Happiness of the Pokemon, between 0 and 140. Happiness is used for multiple mechanics in-game, and can be increased or decreased through certain activities. The base happiness reflects the happiness the pokemon starts out with.
+
+-   **against\_?:** Eighteen features that denote the amount of damage taken against an attack of a particular type. These are multipliers that are between 0 and 4.
+
+-   **hp:** The Base HP of the Pokemon. This is between 1 and 255 Hit Points/ Health Points.
+
+-   **attack:** The Base Attack of the Pokemon, between 5 and 185.
+
+-   **defense:** The Base Defense of the Pokemon, between 5 and 230.
+
+-   **sp_attack:** The Base Special Attack of the Pokemon, between 10 and 194.
+
+-   **sp_defense:** The Base Special Defense of the Pokemon, between 20 and 230.
+
+-   **speed:** The Base Speed of the Pokemon, between 5 and 180. Speed determines who attacks first if there are multiple pokemon and there is not another priority for deciding this.
+
+-   **generation:** The numbered generation which the Pokemon was first introduced. This dataset contains pokemon from generation 1 through 7.
+
+-   **is_legendary:** Denotes if the Pokemon is legendary. Here 0 means not legendary and 1 means it is a legendary.
+
+```{r}
+# The data summarized
+summary(data)
+```
+
+```{r}
+#| warning: false
+# make plots
+# for all these plots there seems to be a linear relationship (weight maybe a bit less linear at the end) between base_total and the possible predictors. The slope would be different between these, where attack has the steepest slope if a linear line would be used to predict, weight or height would be the least steep.
+
+plot1 <- ggplot(data, aes(x = base_total, y = height_m)) +
+        geom_point() +
+        labs(
+          title = "Base total vs Height",
+          x = "Base total",
+          y = "Height (m)"
+        )
+plot2 <- ggplot(data, aes(x = base_total, y = attack)) +
+        geom_point() +
+        labs(
+          title = "Base total vs Attack",
+          x = "Base total",
+          y = "Attack"
+        )
+plot3 <- ggplot(data, aes(x = base_total, y = weight_kg)) +
+        geom_point() +
+        labs(
+          title = "Base total vs Weight",
+          x = "Base total",
+          y = "Weight (kg)"
+        )
+plot4 <- ggplot(data, aes(x = base_total, y = defense)) +
+        geom_point() +
+        labs(
+          title = "Base total vs Defense",
+          x = "Base total",
+          y = "Defense"
+        )
+
+```
+
+## Base total vs Height
+
+The scatter plot shows the relationship between total statistics of Pokemon and height. There can be observed a positive linear association. Most values for height are clustered in the tail with a few notable outliers in the middle.
+
+```{r}
+#| label: plot1
+#| warning: false
+print(plot1)
+```
+
+## Base total vs Attack
+
+The scatter plot shows the relationship between total statistics of Pokemon and attack. There can be observed a strong positive linear association. The values are fairly equally distributed along the regression line with no notable outliers.
+
+```{r}
+#| label: plot2
+#| warning: false
+print(plot2)
+```
+
+## Base total vs Weight (kg)
+
+The scatter plot shows the relationship between total statistics of Pokemon and weight. There can be observed a slight positive linear association. The values are more scattered in the low and medium overall statistics while being more spread out for Pokemon with high values. A few notable outliers can be detected along the regression line.
+
+```{r}
+#| label: plot3
+#| warning: false
+print(plot3)
+```
+
+## Base total vs Defense
+
+The scatter plot shows the relationship between total statistics of Pokemon and defense. There can be observed strong positive linear association. The values are slightly more scattered in the low and medium overall statistics while being more spread out for Pokemon with high values. A few notable outliers can be detected among Pokemon with high statistics.
+
+```{r}
+#| label: plot4
+#| warning: false
+print(plot4)
+```
+
+## Research question
+
+Is there a relationship between physical characteristics and stats? (IE is base stat total correlated with non stat related features)
+
+## Data preparation 
+
+Before fitting the model the data set has been filtered to retain only relevant variables, which are: total statistics, the number of steps required to hatch an egg, base happiness, capture rate, classification, experience growth, height in meters, whether the Pokemon is legendary, the. primary type, the secondary type, weight in kilograms and generation.
+
+The data was split into a training set 80% and a test set 20%.
+
+```{r}
+
+mse <- function(actual, predicted) {
+  mean((actual - predicted)^2)
+}
+
+# Edit these variables to change the model
+filtered <- data %>%
+  select(base_total,
+         base_egg_steps,
+         base_happiness,
+         capture_rate,
+         classfication,
+         experience_growth,
+         height_m,
+         is_legendary,
+         type1,
+         type2,
+         weight_kg,
+         generation)
+
+filtered <- na.omit(filtered)
+
+train <- model.matrix(base_total ~ ., data=filtered)
+
+train_test_split <- sample(1:nrow(filtered), 0.8*nrow(filtered))
+
+x_train <- train[train_test_split, ]
+test  <- train[-train_test_split, ]
+
+train_y <- data$base_total[train_test_split]
+test_y  <- data$base_total[-train_test_split]
+
+
+train <- model.matrix(base_total ~ ., data=filtered)
+
+# Lasso
+Lasso <- glmnet(x      = x_train,
+                 y      = train_y,  
+                 alpha  = 1) 
+
+# Ridge
+Ridge <- glmnet(x      = x_train,
+                 y      = train_y,    
+                 alpha  = 0)
+
+
+# Vanaf hier alles van de labs
+y_pred_lasso <- as.numeric(
+  predict(
+    Lasso,
+    newx = test,
+    s = Lasso$lambda.min[1]
+  )
+)
+y_pred_lasso
+y_pred_ridge <- as.numeric(
+  predict(
+    Ridge,
+    newx = test,
+    s = Ridge$lambda.min[1]
+  )
+)
+y_pred_ridge
+
+# Calculate MSEs
+mses <- c(
+  mse(test_y, y_pred_lasso),
+  mse(test_y, y_pred_ridge)
+)
+
+# Create a plot
+tibble(Method = as_factor(c("lasso", "rdg")), MSE = mses) %>% 
+  ggplot(aes(x = Method, y = MSE, fill = Method)) +
+  geom_bar(stat = "identity", col = "black") +
+  theme_minimal() +
+  theme(legend.position = "none") +
+  labs(title = "Comparison of test set MSE for different prediction methods") +
+  scale_fill_viridis_d() 
+```
+
+What can be observed on a bar chart is that the test set MSE of Ridge regression vastly outperforms prediction of Lasso regression. Lasso produces MSE higher than 30,000, while Ridge below 20,000. Considering this data set, what can be concluded is that Ridge performs significantly better at generalization to unseen data.
+
+Present results
+
+Contributions:
+
+Friso did explore the data and part of the preparing of the data.
+
+Franciszek did work on the style and table descriptions
