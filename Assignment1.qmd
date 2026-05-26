@@ -84,35 +84,53 @@ The dataset consists of 801 pokemon, their pokedex index, their names (english a
 -   **is_legendary:** Denotes if the Pokemon is legendary. Here 0 means not legendary and 1 means it is a legendary.
 
 ```{r}
+# The data summarized
 summary(data)
 ```
 
 ```{r}
 #| warning: false
-numeric_cols <- names(data)[sapply(data, is.numeric)]
-numeric_cols <- numeric_cols[19:length(numeric_cols)]
-numeric_cols
+# make plots
+# for all these plots there seems to be a linear relationship (weight maybe a bit less linear at the end) between base_total and the possible predictors. The slope would be different between these, where attack has the steepest slope if a linear line would be used to predict, weight or height would be the least steep.
 
-for (i in 1:length(numeric_cols)) {
-  for (j in i:length(numeric_cols)) {
-    if (numeric_cols[i] != numeric_cols[j]) {
-      p <- ggplot(data, aes(x = .data[[numeric_cols[i]]],
-                            y = .data[[numeric_cols[j]]])) +
+plot1 <- ggplot(data, aes(x = base_total, y = height_m)) +
         geom_point() +
         labs(
-          title = paste(numeric_cols[j], "vs", numeric_cols[i]),
-          x = numeric_cols[i],
-          y = numeric_cols[j]
+          title = "Base total vs Height",
+          x = "Base total",
+          y = "Height (m)"
         )
-      
-      print(p)
-    }
-  }
-}
+plot2 <- ggplot(data, aes(x = base_total, y = attack)) +
+        geom_point() +
+        labs(
+          title = "Base total vs Attack",
+          x = "Base total",
+          y = "Attack"
+        )
+plot3 <- ggplot(data, aes(x = base_total, y = weight_kg)) +
+        geom_point() +
+        labs(
+          title = "Base total vs Weight",
+          x = "Base total",
+          y = "Weight (kg)"
+        )
+plot4 <- ggplot(data, aes(x = base_total, y = defense)) +
+        geom_point() +
+        labs(
+          title = "Base total vs Defense",
+          x = "Base total",
+          y = "Defense"
+        )
+# print plots
+print(plot1)
+print(plot2)
+print(plot3)
+print(plot4)
+
 ```
 
-Research question and fit
-Research question: Is there a relationship between physical characteristics and stats? (IE is base stat total correlated with non stat related features)
+Research question and fit Research question: Is there a relationship between physical characteristics and stats? (IE is base stat total correlated with non stat related features)
+
 ```{r}
 
 mse <- function(actual, predicted) {
@@ -193,4 +211,10 @@ tibble(Method = as_factor(c("lasso", "rdg")), MSE = mses) %>%
   labs(title = "Comparison of test set MSE for different prediction methods") +
   scale_fill_viridis_d() 
 ```
+
 Present results
+
+
+Contributions:
+
+Friso did explore the data and part of the preparing of the data.
