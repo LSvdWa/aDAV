@@ -168,7 +168,7 @@ print(plot4)
 
 Is there a relationship between physical characteristics and stats? (IE is base stat total correlated with non stat related features)
 
-## Data preparation 
+## Data preparation
 
 Before fitting the model the data set has been filtered to retain only relevant variables, which are: total statistics, the number of steps required to hatch an egg, base happiness, capture rate, classification, experience growth, height in meters, whether the Pokemon is legendary, the. primary type, the secondary type, weight in kilograms and generation.
 
@@ -257,10 +257,14 @@ tibble(Method = as_factor(c("lasso", "rdg")), MSE = mses) %>%
 
 What can be observed on a bar chart is that the test set MSE of Ridge regression vastly outperforms prediction of Lasso regression. Lasso produces MSE higher than 30,000, while Ridge below 20,000. Considering this data set, what can be concluded is that Ridge performs significantly better at generalization to unseen data.
 
-Present results
+**Present results**
 
 Contributions:
 
 Friso did explore the data and part of the preparing of the data.
 
 Franciszek did work on the style and table descriptions
+
+Leander made the model
+
+Marije assessed the model
