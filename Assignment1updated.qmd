@@ -10,7 +10,7 @@ authors:
 date: "2026-05-27"
 ---
 
-```{r}
+```{r include=FALSE}
 #| warning: false
 # Initialization
 set.seed(28)
@@ -28,9 +28,7 @@ library(tidyverse)
 library(caret)
 ```
 
-## Add data
-
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+## Adding data
 
 ```{r}
 #| warning: false
@@ -39,7 +37,7 @@ data$capture_rate <- as.numeric(data$capture_rate) # One NA
 
 ```
 
-# Explore data
+## Exploring data
 
 The dataset consists of 801 pokemon, their pokedex index, their names (english and japanese) and the following statistics:
 
@@ -79,11 +77,13 @@ The dataset consists of 801 pokemon, their pokedex index, their names (english a
 
 -   **speed:** The Base Speed of the Pokemon, between 5 and 180. Speed determines who attacks first if there are multiple pokemon and there is not another priority for deciding this.
 
+-   **base_total:** The Base Total is the combination of the different base stats, between 180 and 780. 
+
 -   **generation:** The numbered generation which the Pokemon was first introduced. This dataset contains pokemon from generation 1 through 7.
 
 -   **is_legendary:** Denotes if the Pokemon is legendary. Here 0 means not legendary and 1 means it is a legendary.
 
-```{r}
+```{r include=FALSE}
 # The data summarized
 summary(data)
 ```
@@ -174,8 +174,8 @@ Before fitting the model the data set has been filtered to retain only relevant 
 
 The data was split into a training set 80% and a test set 20%.
 
-```{r}
-
+```{r results='hide'}
+#| warning: false
 mse <- function(actual, predicted) {
   mean((actual - predicted)^2)
 }
@@ -245,6 +245,9 @@ mses <- c(
   mse(test_y, y_pred_ridge)
 )
 
+```
+
+```{r}
 # Create a plot
 tibble(Method = as_factor(c("lasso", "rdg")), MSE = mses) %>% 
   ggplot(aes(x = Method, y = MSE, fill = Method)) +
@@ -257,13 +260,11 @@ tibble(Method = as_factor(c("lasso", "rdg")), MSE = mses) %>%
 
 What can be observed on a bar chart is that the test set MSE of Ridge regression vastly outperforms prediction of Lasso regression. Lasso produces MSE higher than 30,000, while Ridge below 20,000. Considering this data set, what can be concluded is that Ridge performs significantly better at generalization to unseen data.
 
-**Present results**
+## Contributions:
 
-Contributions:
+Friso explored the data and part of the preparing of the data.
 
-Friso did explore the data and part of the preparing of the data.
-
-Franciszek did work on the style and table descriptions
+Franciszek worked on the style and table descriptions
 
 Leander made the model
 
