@@ -10,5 +10,6 @@ function(input, output, session) {
       data <- data[as.numeric(data$generation) %in% input$gens, ]
       hist(x=data$base_total, xlab="Base Total Stats", breaks = input$bins, main="Histogram of Base Total per Generation", col = "cyan")
     })
+    output$pokemonName <- reactive(input$pokeName)
 
 }

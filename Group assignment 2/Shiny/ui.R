@@ -1,13 +1,7 @@
-#
-# This is the user-interface definition of a Shiny web application. You can
-# run the application by clicking 'Run App' above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    https://shiny.posit.co/
-#
-
 library(shiny)
+
+data <- read.csv("./pokemon.csv")
+
 
 # Define UI for application that draws a histogram
 fluidPage(
@@ -33,10 +27,17 @@ fluidPage(
               min = 1,
               max = 50,
               value = 30
+            ),
+            selectInput(
+              inputId = "pokeName",
+              label = "Name of pokemon",
+              choices = data$name,
+              selected = ""
             )
         ),
         mainPanel(
-            plotOutput("pokePlot")
+            plotOutput("pokePlot"),
+            textOutput("pokemonName")
         )
     )
 )
