@@ -14,30 +14,22 @@ fluidPage(
     # The snippet from here :
     sidebarLayout(
         sidebarPanel(
-            checkboxGroupInput(
-              "gens", 
-              "Generations:", 
-              selected = c("1", "2", "3", "4", "5", "6", "7"),
-              choiceNames = c("1", "2", "3", "4", "5", "6", "7"),
-              choiceValues = c(1, 2, 3, 4, 5, 6, 7)
-              ),
-            sliderInput(
-              inputId = "bins",
-              label = "Number of bins:",
-              min = 1,
-              max = 50,
-              value = 30
-            ),
             selectInput(
               inputId = "pokeName",
-              label = "Name of pokemon",
+              label = "Pokemon name",
               choices = data$name,
-              selected = ""
+              selected = "Beedrill"
+            ),
+            selectInput(
+              inputId = "pokeName1",
+              label = "Pokemon to compare with",
+              choices = data$name,
+              selected = "Shuckle"
             )
         ),
         mainPanel(
-            plotOutput("pokePlot"),
-            textOutput("pokemonName")
+            plotOutput("radarPlot"),
+            plotOutput("statPlot")
         )
     )
 )
