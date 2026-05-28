@@ -13,25 +13,23 @@ library(shiny)
 fluidPage(
 
     # Application title
-    titlePanel("Old Faithful Geyser Data"),
+    titlePanel("Interactive Pokemon Data"),
+    p("Gen. 1 - 7"),
 
     # Sidebar with a slider input for number of bins
     # The snippet from here :
     sidebarLayout(
         sidebarPanel(
-            sliderInput("bins",
-                        "Number of bins:",
-                        min = 1,
-                        max = 50,
-                        value = 30),
-            selectInput(inputId = "hiscol",
-                        label = "Which colour would yhou like the graph to be?",
-                        choices = c("red", "gray", "yellow")),
+            checkboxGroupInput(
+              "gens", 
+              "Generations:", 
+              selected = c("1", "2", "3", "4", "5", "6", "7"),
+              choiceNames = c("1", "2", "3", "4", "5", "6", "7"),
+              choiceValues = c(1, 2, 3, 4, 5, 6, 7)
+              )
         ),
-    # until here decides the layout
-        # Show a plot of the generated distribution
         mainPanel(
-            plotOutput("distPlot")
+            plotOutput("pokePlot")
         )
     )
 )
