@@ -2,6 +2,8 @@ library(shiny)
 library(fmsb)
 library(dplyr)
 library(ggplot2)
+
+
 function(input, output, session) {
 
     data <- read.csv("./pokemon.csv")
@@ -88,7 +90,6 @@ function(input, output, session) {
         )
       }
     })
-<<<<<<< HEAD
     
     #regression plot Attack vs HP
     output$statRegressionPlot <- renderPlot({
@@ -117,7 +118,7 @@ function(input, output, session) {
       
       legend("topright", legend = c("Linear","Quadratic","Cubic"),
              col = c("blue","red","green"), lwd = 2)
-=======
+  
     filteredData <- reactive({
       
       df <- data
@@ -164,6 +165,6 @@ function(input, output, session) {
         ) +
         theme_minimal()
       
->>>>>>> e8d5002de8e84a15b9af984a68fb7ca290c8a62b
     })
+  })
 }
