@@ -31,6 +31,7 @@ fluidPage(
               "Graph Type",
               choices = c("Radar", "Bar")
             ),
+           
            titlePanel("Second graph"),
            selectInput(
               "xStat",
@@ -97,40 +98,17 @@ fluidPage(
               input.FilterON == 'speed'
               ",
               
-              selectInput(
-                "filterDirection",
-                "Higher or Lower",
-                choices = c(
-                  "Higher than",
-                  "Lower than" 
-                )
-              ),
-              
-              numericInput(
-                "filterValue",
-                "Filter Value",
-                value = 0,
-                min = 0
-              )
-            )
-            
-            
-            
+              sliderInput(
+                "range", 
+                "Range:",
+                min = 0, max = 100,
+                value = c(10, 90))
+            )  
         ),
         mainPanel(
           plotOutput("comparisonPlot"),
           plotOutput("scatterPlot")
         )
-    ),
-    
-    sidebarLayout(
-      sidebarPanel(
-        h4("Regression Plot (Attack vs HP)"),
-        p("Shows Linear, Quadratic, and Cubic regression for the selected Pokémon.")  
-      ),
-      mainPanel(
-        plotOutput("statRegressionPlot", height = "500px")
-      )
     )
 )
 

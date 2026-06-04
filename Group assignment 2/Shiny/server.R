@@ -91,34 +91,13 @@ function(input, output, session) {
       }
     })
     
-    #regression plot Attack vs HP
-    output$statRegressionPlot <- renderPlot({
-      
-      stat_df <- data %>% 
-        filter(name %in% c(input$pokeName, input$pokeName1))
-      
-      model_lin <- lm(attack ~ hp, data = stat_df)
-      model_quad <- lm(attack ~ hp + I(hp^2), data = stat_df)
-      model_cubic <- lm(attack ~ hp + I(hp^2) + I(hp^3), data = stat_df)
-      
-      hp_pred <- seq(min(stat_df$hp), max(stat_df$hp), length.out = 100)
-      pred_df <- data.frame(hp = hp_pred)
-      pred_df$attack_lin <- predict(model_lin, newdata = pred_df)
-      pred_df$attack_quad <- predict(model_quad, newdata = pred_df)
-      pred_df$attack_cubic <- predict(model_cubic, newdata = pred_df)
-      
-      plot(stat_df$hp, stat_df$attack,
-           pch = 19, col = c("#00AFBB", "#E7B800"),
-           xlab = "HP", ylab = "Attack",
-           main = "Attack vs HP with Regression Lines")
-      
-      lines(pred_df$hp, pred_df$attack_lin, col = "blue", lwd = 2)
-      lines(pred_df$hp, pred_df$attack_quad, col = "red", lwd = 2)
-      lines(pred_df$hp, pred_df$attack_cubic, col = "green", lwd = 2)
-      
-      legend("topright", legend = c("Linear","Quadratic","Cubic"),
-             col = c("blue","red","green"), lwd = 2)
-  
+    sliderValues <- reactive({
+      data.frame(
+        Name = c("Range"),
+        Value = as.character(paste(input$range, collapse = " ")),
+        stringsAsFactors = FALSE)
+    })
+    
     filteredData <- reactive({
       
       df <- data
@@ -127,18 +106,45 @@ function(input, output, session) {
         
         col <- input$FilterON
         
-        if (input$filterDirection == "Higher than") {
-          df <- df %>% filter(data[[col]] > input$filterValue)
-        } else if (input$filterDirection == "Lower than") {
-          df <- df %>% filter(data[[col]] < input$filterValue)
-        }
-        
+        df <- df %>% filter(data[[col]] > input$range[1] & 
+                              data[[col]] < input$range[2])
+    
       }
+      
       else if (input$FilterON == "Is legendary") {
         df <- df[df$is_legendary == 1, ]
       }
       df
     })
+    
+    observeEvent(input$FilterON, {
+      
+      if (input$FilterON %in% c(
+        "weight_kg",
+        "pokedex_number",
+        "hp",
+        "attack",
+        "defense",
+        "sp_attack",
+        "sp_defense",
+        "speed"
+      )) {
+        
+        vals <- data[[input$FilterON]]
+        
+        updateSliderInput(
+          session,
+          "range",
+          min = floor(min(vals, na.rm = TRUE)),
+          max = ceiling(max(vals, na.rm = TRUE)),
+          value = c(
+            floor(min(vals, na.rm = TRUE)),
+            ceiling(max(vals, na.rm = TRUE))
+          )
+        )
+      }
+    })
+    
     output$scatterPlot <- renderPlot({
       
       df <- filteredData()
@@ -167,5 +173,4 @@ function(input, output, session) {
         theme_minimal()
       
     })
-  })
 }
