@@ -55,7 +55,8 @@ fluidPage(
                 "sp_attack",
                 "sp_defense",
                 "speed"
-              )
+              ),
+              selected = "attack"
             ),
             selectInput(
               "Colour",
@@ -63,10 +64,8 @@ fluidPage(
               choices = c(
                 "None",
                 "generation",
-                "classification",
                 "type1",
-                "type2",
-                "abilities"
+                "type2"
               )
             ),
             

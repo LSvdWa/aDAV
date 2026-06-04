@@ -163,6 +163,7 @@ function(input, output, session) {
           y = input$yStat,
           colour = input$Colour
         ) +
+        geom_smooth(method="lm", aes(group=1), colour="black") +
         theme_minimal()
       
     })
