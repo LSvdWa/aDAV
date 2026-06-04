@@ -13,6 +13,7 @@ fluidPage(
     # The snippet from here :
     sidebarLayout(
         sidebarPanel(
+           titlePanel("First graph"),
             selectInput(
               inputId = "pokeName",
               label = "Pokemon name",
@@ -29,7 +30,9 @@ fluidPage(
               "graphType",
               "Graph Type",
               choices = c("Radar", "Bar")
-            ),selectInput(
+            ),
+           titlePanel("Second graph"),
+           selectInput(
               "xStat",
               "X Axis",
               choices = c(
@@ -58,6 +61,7 @@ fluidPage(
               "Colour",
               "Colour",
               choices = c(
+                "None",
                 "generation",
                 "classification",
                 "type1",

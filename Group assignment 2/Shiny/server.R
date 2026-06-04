@@ -72,7 +72,8 @@ function(input, output, session) {
                         "Speed","Defense","Attack"),
           col = "#00AFBB",
           xlim = c(0,255),
-          main = names[1]
+          main = names[1],
+          las = 1
         )
         
         barplot(
@@ -82,7 +83,8 @@ function(input, output, session) {
                         "Speed","Defense","Attack"),
           col = "#E7B800",
           xlim = c(0,255),
-          main = names[2]
+          main = names[2],
+          las = 1
         )
       }
     })
@@ -95,9 +97,9 @@ function(input, output, session) {
         col <- input$FilterON
         
         if (input$filterDirection == "Higher than") {
-          df <- df %>% filter(.data[[col]] > input$filterValue)
+          df <- df %>% filter(data[[col]] > input$filterValue)
         } else if (input$filterDirection == "Lower than") {
-          df <- df %>% filter(.data[[col]] < input$filterValue)
+          df <- df %>% filter(data[[col]] < input$filterValue)
         }
         
       }
@@ -109,13 +111,18 @@ function(input, output, session) {
     output$scatterPlot <- renderPlot({
       
       df <- filteredData()
-      
+      if (input$Colour != "None") {
+        var_colour <- df[[input$Colour]]
+      }
+      else {
+        var_colour <- c("Select a colour")
+      }
       ggplot(
         df,
         aes_string(
           x = input$xStat,
           y = input$yStat,
-          colour = as.factor(df[[input$Colour]])
+          colour = as.factor(var_colour)
         )
       ) +
         geom_point(size = 3, alpha = 0.7) +
