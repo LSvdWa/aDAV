@@ -1,7 +1,7 @@
 library(shiny)
 library(fmsb)
 library(dplyr)
-
+library(ggplot2)
 function(input, output, session) {
 
     data <- read.csv("./pokemon.csv")
@@ -85,5 +85,47 @@ function(input, output, session) {
           main = names[2]
         )
       }
+    })
+    filteredData <- reactive({
+      
+      df <- data
+      
+      if (input$FilterON != "Is legendary" && input$FilterON != "None") {
+        
+        col <- input$FilterON
+        
+        if (input$filterDirection == "Higher than") {
+          df <- df %>% filter(.data[[col]] > input$filterValue)
+        } else if (input$filterDirection == "Lower than") {
+          df <- df %>% filter(.data[[col]] < input$filterValue)
+        }
+        
+      }
+      else if (input$FilterON == "Is legendary") {
+        df <- df[df$is_legendary == 1, ]
+      }
+      df
+    })
+    output$scatterPlot <- renderPlot({
+      
+      df <- filteredData()
+      
+      ggplot(
+        df,
+        aes_string(
+          x = input$xStat,
+          y = input$yStat,
+          colour = as.factor(df[[input$Colour]])
+        )
+      ) +
+        geom_point(size = 3, alpha = 0.7) +
+        labs(
+          title = paste(input$xStat, "vs", input$yStat),
+          x = input$xStat,
+          y = input$yStat,
+          colour = input$Colour
+        ) +
+        theme_minimal()
+      
     })
 }
