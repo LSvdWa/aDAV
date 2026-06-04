@@ -2,113 +2,130 @@ library(shiny)
 data <- read.csv("./pokemon.csv")
 
 
-# Define UI for application that draws a histogram
 fluidPage(
+  # Title and subtitle
+  titlePanel("Interactive Pokemon Data"),
+  p("(Generations 1 - 7)"),
 
-    # Application title
-    titlePanel("Interactive Pokemon Data"),
-    p("Gen. 1 - 7"),
-
-    # Sidebar with a slider input for number of bins
-    # The snippet from here :
-    sidebarLayout(
-        sidebarPanel(
-           titlePanel("First graph"),
-            selectInput(
-              inputId = "pokeName",
-              label = "Pokemon name",
-              choices = data$name,
-              selected = "Beedrill"
-            ),
-            selectInput(
-              inputId = "pokeName1",
-              label = "Pokemon to compare with",
-              choices = data$name,
-              selected = "Shuckle"
-            ),
-            selectInput(
-              "graphType",
-              "Graph Type",
-              choices = c("Radar", "Bar")
-            ),
-           
-           titlePanel("Second graph"),
-           selectInput(
-              "xStat",
-              "X Axis",
-              choices = c(
-                "hp",
-                "attack",
-                "defense",
-                "sp_attack",
-                "sp_defense",
-                "speed"
-              )
-            ),
-            
-            selectInput(
-              "yStat",
-              "Y Axis",
-              choices = c(
-                "hp",
-                "attack",
-                "defense",
-                "sp_attack",
-                "sp_defense",
-                "speed"
-              ),
-              selected = "attack"
-            ),
-            selectInput(
-              "Colour",
-              "Colour",
-              choices = c(
-                "None",
-                "generation",
-                "type1",
-                "type2"
-              )
-            ),
-            
-            selectInput(
-              "FilterON",
-              "Filter",
-              choices = c(
-                "None",
-                "Is legendary",
-                "weight_kg",
-                "pokedex_number",
-                "hp",
-                "attack",
-                "defense",
-                "sp_attack",
-                "sp_defense",
-                "speed"
-              )
-            ),
-            conditionalPanel(
-              condition = "
-              input.FilterON == 'weight_kg' ||
-              input.FilterON == 'pokedex_number' ||
-              input.FilterON == 'hp' ||
-              input.FilterON == 'attack' ||
-              input.FilterON == 'defense' ||
-              input.FilterON == 'sp_attack' ||
-              input.FilterON == 'sp_defense' ||
-              input.FilterON == 'speed'
-              ",
-              
-              sliderInput(
-                "range", 
-                "Range:",
-                min = 0, max = 100,
-                value = c(10, 90))
-            )  
-        ),
-        mainPanel(
-          plotOutput("comparisonPlot"),
-          plotOutput("scatterPlot")
+  sidebarLayout(
+    
+    # this is where the inputs are
+    sidebarPanel(
+      
+      # Radar or bar chart
+      titlePanel("First graph"),
+      
+      # first pokemon
+      selectInput(
+        inputId = "pokeName",
+        label = "Pokemon name",
+        choices = data$name,
+        selected = "Beedrill"
+      ),
+      # second pokemon
+      selectInput(
+        inputId = "pokeName1",
+        label = "Pokemon to compare with",
+        choices = data$name,
+        selected = "Shuckle"
+      ),
+      # choose to see radar or bar
+      selectInput(
+        "graphType",
+        "Graph Type",
+        choices = c("Radar", "Bar")
+      ),
+       
+      # second diagram
+      titlePanel("Second graph"),
+      
+      # choose stat for x-axis
+      selectInput(
+        "xStat",
+        "X Axis",
+        choices = c(
+          "hp",
+          "attack",
+          "defense",
+          "sp_attack",
+          "sp_defense",
+          "speed"
         )
+      ),
+        
+      # choose stat for y-axis
+      selectInput(
+        "yStat",
+        "Y Axis",
+        choices = c(
+          "hp",
+          "attack",
+          "defense",
+          "sp_attack",
+          "sp_defense",
+          "speed"
+        ),
+        selected = "attack"
+      ),
+      
+      # choose colours based on 1 of three categories
+      selectInput(
+        "Colour",
+        "Colour",
+        choices = c(
+          "None",
+          "generation",
+          "type1",
+          "type2"
+        )
+      ),
+      
+      # choose whether to see a filter
+      selectInput(
+        "FilterON",
+        "Filter",
+        choices = c(
+          "None",
+          "Is legendary",
+          "weight_kg",
+          "pokedex_number",
+          "hp",
+          "attack",
+          "defense",
+          "sp_attack",
+          "sp_defense",
+          "speed",
+          "generation"
+        )
+      ),
+      
+      # if a numerical filter is chosen, add the sliderInput
+      conditionalPanel(
+        condition = "
+        input.FilterON == 'weight_kg' ||
+        input.FilterON == 'pokedex_number' ||
+        input.FilterON == 'hp' ||
+        input.FilterON == 'attack' ||
+        input.FilterON == 'defense' ||
+        input.FilterON == 'sp_attack' ||
+        input.FilterON == 'sp_defense' ||
+        input.FilterON == 'speed' ||
+        input.FilterON == 'generation'
+        ",
+        
+        sliderInput(
+          "range", 
+          "Range:",
+          min = 0, max = 100,
+          value = c(10, 90))
+      )  
+    ),
+    
+    # This is where the plots are
+    mainPanel(
+      plotOutput("comparisonPlot"),
+      plotOutput("scatterPlot")
     )
+  )
 )
 
