@@ -1,5 +1,4 @@
 library(shiny)
-
 data <- read.csv("./pokemon.csv")
 
 
@@ -25,11 +24,16 @@ fluidPage(
               label = "Pokemon to compare with",
               choices = data$name,
               selected = "Shuckle"
+            ),
+            selectInput(
+              "graphType",
+              "Graph Type",
+              choices = c("Radar", "Bar")
             )
+            
         ),
         mainPanel(
-            plotOutput("radarPlot"),
-            plotOutput("statPlot")
+          plotOutput("comparisonPlot")
         )
     )
 )
