@@ -35,5 +35,16 @@ fluidPage(
         mainPanel(
           plotOutput("comparisonPlot")
         )
+    ),
+    
+    sidebarLayout(
+      sidebarPanel(
+        h4("Regression Plot (Attack vs HP)"),
+        p("Shows Linear, Quadratic, and Cubic regression for the selected Pokémon.")  
+      ),
+      mainPanel(
+        plotOutput("statRegressionPlot", height = "500px")
+      )
     )
 )
+

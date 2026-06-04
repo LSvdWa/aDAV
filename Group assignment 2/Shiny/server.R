@@ -86,4 +86,33 @@ function(input, output, session) {
         )
       }
     })
+    
+    #regression plot Attack vs HP
+    output$statRegressionPlot <- renderPlot({
+      
+      stat_df <- data %>% 
+        filter(name %in% c(input$pokeName, input$pokeName1))
+      
+      model_lin <- lm(attack ~ hp, data = stat_df)
+      model_quad <- lm(attack ~ hp + I(hp^2), data = stat_df)
+      model_cubic <- lm(attack ~ hp + I(hp^2) + I(hp^3), data = stat_df)
+      
+      hp_pred <- seq(min(stat_df$hp), max(stat_df$hp), length.out = 100)
+      pred_df <- data.frame(hp = hp_pred)
+      pred_df$attack_lin <- predict(model_lin, newdata = pred_df)
+      pred_df$attack_quad <- predict(model_quad, newdata = pred_df)
+      pred_df$attack_cubic <- predict(model_cubic, newdata = pred_df)
+      
+      plot(stat_df$hp, stat_df$attack,
+           pch = 19, col = c("#00AFBB", "#E7B800"),
+           xlab = "HP", ylab = "Attack",
+           main = "Attack vs HP with Regression Lines")
+      
+      lines(pred_df$hp, pred_df$attack_lin, col = "blue", lwd = 2)
+      lines(pred_df$hp, pred_df$attack_quad, col = "red", lwd = 2)
+      lines(pred_df$hp, pred_df$attack_cubic, col = "green", lwd = 2)
+      
+      legend("topright", legend = c("Linear","Quadratic","Cubic"),
+             col = c("blue","red","green"), lwd = 2)
+    })
 }
