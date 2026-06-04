@@ -1,7 +1,7 @@
 library(shiny)
 library(fmsb)
 library(dplyr)
-
+library(ggplot2)
 function(input, output, session) {
 
     data <- read.csv("./pokemon.csv")
@@ -72,7 +72,8 @@ function(input, output, session) {
                         "Speed","Defense","Attack"),
           col = "#00AFBB",
           xlim = c(0,255),
-          main = names[1]
+          main = names[1],
+          las = 1
         )
         
         barplot(
@@ -82,10 +83,12 @@ function(input, output, session) {
                         "Speed","Defense","Attack"),
           col = "#E7B800",
           xlim = c(0,255),
-          main = names[2]
+          main = names[2],
+          las = 1
         )
       }
     })
+<<<<<<< HEAD
     
     #regression plot Attack vs HP
     output$statRegressionPlot <- renderPlot({
@@ -114,5 +117,53 @@ function(input, output, session) {
       
       legend("topright", legend = c("Linear","Quadratic","Cubic"),
              col = c("blue","red","green"), lwd = 2)
+=======
+    filteredData <- reactive({
+      
+      df <- data
+      
+      if (input$FilterON != "Is legendary" && input$FilterON != "None") {
+        
+        col <- input$FilterON
+        
+        if (input$filterDirection == "Higher than") {
+          df <- df %>% filter(data[[col]] > input$filterValue)
+        } else if (input$filterDirection == "Lower than") {
+          df <- df %>% filter(data[[col]] < input$filterValue)
+        }
+        
+      }
+      else if (input$FilterON == "Is legendary") {
+        df <- df[df$is_legendary == 1, ]
+      }
+      df
+    })
+    output$scatterPlot <- renderPlot({
+      
+      df <- filteredData()
+      if (input$Colour != "None") {
+        var_colour <- df[[input$Colour]]
+      }
+      else {
+        var_colour <- c("Select a colour")
+      }
+      ggplot(
+        df,
+        aes_string(
+          x = input$xStat,
+          y = input$yStat,
+          colour = as.factor(var_colour)
+        )
+      ) +
+        geom_point(size = 3, alpha = 0.7) +
+        labs(
+          title = paste(input$xStat, "vs", input$yStat),
+          x = input$xStat,
+          y = input$yStat,
+          colour = input$Colour
+        ) +
+        theme_minimal()
+      
+>>>>>>> e8d5002de8e84a15b9af984a68fb7ca290c8a62b
     })
 }
