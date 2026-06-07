@@ -121,8 +121,8 @@ fluidPage(
       ),
       
       #third diagram
-      titlePanel("LASSO vs Ridge Regression"),
-      sliderInput("trainSplit", "Proportion of the train set:", min = 0.5, max = 0.99, value = 0.8)
+      titlePanel("Third graph"),
+      sliderInput("trainSplit", "Proportion of the train set", min = 0.5, max = 0.99, value = 0.8)
       
     ),
     
