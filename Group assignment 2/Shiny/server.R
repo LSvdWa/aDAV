@@ -2,6 +2,7 @@ library(shiny)
 library(fmsb)
 library(dplyr)
 library(ggplot2)
+library(glmnet)
 
 
 function(input, output, session) {
@@ -133,6 +134,21 @@ function(input, output, session) {
     }
   })
   
+  #reactive text of selected pokemons and their total stats
+  output$selectedPokeText <- renderText({
+    stat_df <- data %>%
+      filter(name %in% c(input$pokeName, input$pokeName1)) %>%
+      select(name, base_total)
+    
+    poke1 <- stat_df[1, ]
+    poke2 <- stat_df[2, ]
+    
+    paste0("Selected Pokémon: ", poke1$name, " and ", poke2$name, ". ",
+           poke1$name, " total stats = ", poke1$base_total, ", ",
+           poke2$name, " total stats = ", poke2$base_total, 
+           ". Difference = ", abs(poke1$base_total - poke2$base_total))
+  })
+  
   # this makes the final second plot
   output$scatterPlot <- renderPlot({
     
@@ -157,5 +173,66 @@ function(input, output, session) {
            colour = input$Colour) +
       geom_smooth(method="lm", aes(group=1), colour="black") +
       theme_minimal()
+  })
+  
+  #interactive text about regression line
+  output$regressionText <- renderText({
+    df <- filteredData()
+    
+    if(nrow(df) < 2) return("Not enough data to compute regression.")
+    
+    model <- lm(as.formula(paste(input$yStat, "~", input$xStat)), data=df)
+    slope <- round(coef(model)[2], 2)
+    intercept <- round(coef(model)[1], 2)
+    
+    paste0("Regression line for ", input$yStat, " vs ", input$xStat, 
+           ": y = ", intercept, " + ", slope, " * x")
+  })
+  
+  #this is the LASSO vs Ridge chart + interactive text
+  
+  lasso_ridge_results <- reactive({
+    
+    filtered <- data %>%
+      select(base_total, base_egg_steps, base_happiness, capture_rate, classfication,
+             experience_growth, height_m, is_legendary, type1, type2, weight_kg, generation)
+    
+    filtered <- na.omit(filtered)
+    
+    split_idx <- sample(1:nrow(filtered), input$trainSplit * nrow(filtered))
+    x_train <- model.matrix(base_total ~ ., data=filtered)[split_idx, ]
+    x_test  <- model.matrix(base_total ~ ., data=filtered)[-split_idx, ]
+    y_train <- filtered$base_total[split_idx]
+    y_test  <- filtered$base_total[-split_idx]
+    
+    # Cross-validated LASSO
+    cv_lasso <- cv.glmnet(x_train, y_train, alpha=1)
+    y_pred_lasso <- predict(cv_lasso, newx = x_test, s = "lambda.min")
+    
+    # Cross-validated Ridge
+    cv_ridge <- cv.glmnet(x_train, y_train, alpha=0)
+    y_pred_ridge <- predict(cv_ridge, newx = x_test, s = "lambda.min")
+    
+    mse <- function(actual, predicted) mean((actual - predicted)^2)
+    mses <- c(LASSO = mse(y_test, y_pred_lasso),
+              Ridge = mse(y_test, y_pred_ridge))
+    
+    list(cv_lasso=cv_lasso, cv_ridge=cv_ridge, mses=mses)
+  })
+  
+  # Plot MSE bar chart
+  output$msePlot <- renderPlot({
+    res <- lasso_ridge_results()
+    barplot(res$mses, col = c("#00AFBB","#E7B800"),
+            main="Test Set MSE: LASSO vs Ridge", ylab="MSE")
+  })
+  
+  # Reactive interpretation
+  output$mseInterpretation <- renderText({
+    res <- lasso_ridge_results()
+    paste0("With a train-test split of ", round(input$trainSplit*100), "% train data: ",
+           "Test MSE: LASSO = ", round(res$mses["LASSO"],1),
+           ", Ridge = ", round(res$mses["Ridge"],1), 
+           ". This section compares LASSO and Ridge regression performance on predicting total base stats. Adjust the train-test split to see the effect on test MSE.")
   })
 }

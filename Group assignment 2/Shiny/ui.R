@@ -118,13 +118,22 @@ fluidPage(
           "Range:",
           min = 0, max = 100,
           value = c(10, 90))
-      )  
+      ),
+      
+      #third diagram
+      titlePanel("LASSO vs Ridge Regression"),
+      sliderInput("trainSplit", "Proportion of the train set:", min = 0.5, max = 0.99, value = 0.8)
+      
     ),
     
     # This is where the plots are
     mainPanel(
       plotOutput("comparisonPlot"),
-      plotOutput("scatterPlot")
+      textOutput("selectedPokeText"),
+      plotOutput("scatterPlot"),
+      textOutput("regressionText"),
+      plotOutput("msePlot"),
+      textOutput("mseInterpretation")
     )
   )
 )
