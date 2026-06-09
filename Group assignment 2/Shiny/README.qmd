@@ -1,0 +1,132 @@
+---
+title: "README"
+date: "2026-06-10"
+authors:
+- "Friso Harff (7526946)"
+- "Marije Jansen (1277596)"
+- "Franciszek Koziołkiewicz (2383012)"
+- "Leander van der Waal (7180063)"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+---
+
+# Overview
+
+## Purpose
+
+This app can be used for comparing the stats of two pokemon, seeing how two base stats correlate to each other, and learning about how well one stat can be used to predict another stat depending on the size of the train split. The app can be used by anyone interested in pokemon and the correlation of core mechanics, or anyone who wants to learn about the effects of different train splits with a fun example.
+
+## Main Features
+
+-   Feature 1: Comparing two pokemon stat-wise.
+-   Feature 2: Finding the correlation between two base stats.
+-   Feature 3: Learning about the effect of different train splits.
+
+------------------------------------------------------------------------
+
+# Application Design
+
+## Design Goals
+
+When designing this app, the key principles that guided development are accessibility, clear visual communication and simplicity over feature richness. The app is designed to be usable by anyone, regardless of their shiny knowledge or pokemon knowledge, as it is easy to figure out how inputs affect the plots. The visual communication is guided by short texts explaining what each input is and by going for simplicity over feature richness, the plots are easy to interpret.
+
+## User Workflow
+
+To use the app, one start by just loading the app. Certain default values are selected to make the app work instantly without user input. If desired, the user can change the inputs from the default values, and the plots are updated automatically according to the new inputs.
+
+## Interface Choices
+
+### Layout
+
+The app uses a layout where a sidebar on the left is used for inputs, and the main panel shows the output plots. The sidebar is clearly sectioned into three parts, one for each displayed chart. The first plot the user can choose to see either the radar or the bar plot, as this allows for a less cluttered look. The plots are accompanied by a reactive text to assist the user interpreting the plot. 
+
+### Visualizations
+
+#### First graph: Radar or Bar Chart
+
+**Purpose**
+
+The first graph provides insight in how different pokemon compare in stats.
+
+**Why this chart type?**
+
+A radar chart was chosen to recreate the original pokemon feel, as this can also be found in multiple pokemon games. 
+As radar charts are not good visualizations for interpreting absolute values, a bar chart option was added to still allow for proper comparison if desired. The barchart also allows for more insight in how certain stats are on a different scale than others, as a radar chart uses normalized values. The bar chart is made horizontal to allow for a cleaner look with the stat labels next to the bars.
+
+**Alternatives considered**
+
+An alternative considered is two barcharts where the left one is flipped horizontally, so the y-axes could be merged. This was not done as it would make adding labels to the different stats inconvenient for both development and readability.
+
+#### Second graph: Scatterplot with linear regression 
+
+**Purpose**
+
+The scatterplot shows how two stats are distributed over pokemon, and the linear regression makes it easy to see how two stats are correlated.
+
+**Why this chart type?**
+
+The scatterplot clearly shows the distribution of different pokemon across two dimensions, while also being a good chart type to include a linear regression model.
+
+**Alternatives considered**
+
+A hexbin plot has been considered as an alternative, but this was not fit for the filters included, as small changes to the filter could be barely or entirely not visible, which in turn makes the filter less useful.
+
+#### Third graph: Bar chart
+
+**Purpose**
+
+The third graph is used to compare LASSO and Ridge regression. 
+
+**Why this graph?**
+
+A simple bar chart was chosen as this allows for easy comparison while not creating visual clutter.
+
+**Alternatives considered**
+
+For the third graph no alternative was considered as the bar chart satisfied the desired purpose.
+
+------------------------------------------------------------------------
+
+# Data
+
+## Data Source
+
+The data set was sourced from Kaggle: https://www.kaggle.com/datasets/rounakbanik/pokemon
+The data was imported in may 2026.
+
+## Data Structure
+
+Brief overview of used variables:
+
+| Variable       | Description
+|----------------|-------------
+| name           | Name of the pokemon
+| attack         | Base attack stat
+| defense        | Base defense stat
+| speed          | Base speed stat
+| hp             | Amount of health points
+| sp_attack      | Special attack stat
+| sp_defense     | Special defense stat
+| generation     | Generation the pokemon is from
+| type1          | First type of the pokemon
+| type2          | Second type of the pokemon (optional)
+| is_legendary   | Whether the pokemon is legendary or not
+| weight_kg      | Pokemon weight in kilograms
+| height_m       | Pokemon height in metres
+| pokedex_number | Index of pokemon entry in the pokedex
+
+## Data Cleaning
+
+The data did not need any cleaning or preprocessing to be used.
+
+------------------------------------------------------------------------
+
+# Packages Used
+
+- `shiny`
+- `dplyr`
+- `ggplot2`
+- `fmsb`
+- `glmnet`

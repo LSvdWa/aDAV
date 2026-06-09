@@ -116,7 +116,8 @@ function(input, output, session) {
       "defense",
       "sp_attack",
       "sp_defense",
-      "speed"
+      "speed",
+      "generation"
       )) {
       
       vals <- data[[input$FilterON]]
