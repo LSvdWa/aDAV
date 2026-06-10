@@ -15,7 +15,7 @@ fluidPage(
     sidebarPanel(
       
       # Radar or bar chart
-      titlePanel("First graph"),
+      titlePanel("Stat overview"),
       
       # first pokemon
       selectInput(
@@ -39,7 +39,7 @@ fluidPage(
       ),
        
       # second diagram
-      titlePanel("Second graph"),
+      titlePanel("2D dynamic overview of the dataset"),
       
       # choose stat for x-axis
       selectInput(
@@ -123,7 +123,7 @@ fluidPage(
       ),
       
       #third diagram
-      titlePanel("Third graph"),
+      titlePanel("Comparing regressions for Base_Total"),
       sliderInput("trainSplit", "Proportion of the train set", min = 0.5, max = 0.99, value = 0.8)
       
     ),

@@ -40,7 +40,7 @@ To use the app, one start by just loading the app. Certain default values are se
 
 ### Layout
 
-The app uses a layout where a sidebar on the left is used for inputs, and the main panel shows the output plots. The sidebar is clearly sectioned into three parts, one for each displayed chart. The first plot the user can choose to see either the radar or the bar plot, as this allows for a less cluttered look. The plots are accompanied by a reactive text to assist the user interpreting the plot. 
+The app uses a layout where a sidebar on the left is used for inputs, and the main panel shows the output plots. The sidebar is clearly sectioned into three parts, one for each displayed chart. The first plot the user can choose to see either the radar or the bar plot, as this allows for a less cluttered look. The plots are accompanied by a reactive text to assist the user interpreting the plot.
 
 ### Visualizations
 
@@ -52,14 +52,13 @@ The first graph provides insight in how different pokemon compare in stats.
 
 **Why this chart type?**
 
-A radar chart was chosen to recreate the original pokemon feel, as this can also be found in multiple pokemon games. 
-As radar charts are not good visualizations for interpreting absolute values, a bar chart option was added to still allow for proper comparison if desired. The barchart also allows for more insight in how certain stats are on a different scale than others, as a radar chart uses normalized values. The bar chart is made horizontal to allow for a cleaner look with the stat labels next to the bars.
+A radar chart was chosen to recreate the original pokemon feel, as this can also be found in multiple pokemon games. As radar charts are not good visualizations for interpreting absolute values, a bar chart option was added to still allow for proper comparison if desired. The barchart also allows for more insight in how certain stats are on a different scale than others, as a radar chart uses normalized values. The bar chart is made horizontal to allow for a cleaner look with the stat labels next to the bars.
 
 **Alternatives considered**
 
 An alternative considered is two barcharts where the left one is flipped horizontally, so the y-axes could be merged. This was not done as it would make adding labels to the different stats inconvenient for both development and readability.
 
-#### Second graph: Scatterplot with linear regression 
+#### Second graph: Scatterplot with linear regression
 
 **Purpose**
 
@@ -77,7 +76,7 @@ A hexbin plot has been considered as an alternative, but this was not fit for th
 
 **Purpose**
 
-The third graph is used to compare LASSO and Ridge regression. 
+The third graph is used to compare LASSO and Ridge regression.
 
 **Why this graph?**
 
@@ -93,40 +92,39 @@ For the third graph no alternative was considered as the bar chart satisfied the
 
 ## Data Source
 
-The data set was sourced from Kaggle: https://www.kaggle.com/datasets/rounakbanik/pokemon
-The data was imported in may 2026.
+The data set was sourced from Kaggle: https://www.kaggle.com/datasets/rounakbanik/pokemon The data was imported in may 2026.
 
 ## Data Structure
 
 Brief overview of used variables:
 
-| Variable       | Description
-|----------------|-------------
-| name           | Name of the pokemon
-| attack         | Base attack stat
-| defense        | Base defense stat
-| speed          | Base speed stat
-| hp             | Amount of health points
-| sp_attack      | Special attack stat
-| sp_defense     | Special defense stat
-| generation     | Generation the pokemon is from
-| type1          | First type of the pokemon
-| type2          | Second type of the pokemon (optional)
-| is_legendary   | Whether the pokemon is legendary or not
-| weight_kg      | Pokemon weight in kilograms
-| height_m       | Pokemon height in metres
-| pokedex_number | Index of pokemon entry in the pokedex
+| Variable       | Description                             |
+|----------------|-----------------------------------------|
+| name           | Name of the pokemon                     |
+| attack         | Base attack stat                        |
+| defense        | Base defense stat                       |
+| speed          | Base speed stat                         |
+| hp             | Amount of health points                 |
+| sp_attack      | Special attack stat                     |
+| sp_defense     | Special defense stat                    |
+| generation     | Generation the pokemon is from          |
+| type1          | First type of the pokemon               |
+| type2          | Second type of the pokemon (optional)   |
+| is_legendary   | Whether the pokemon is legendary or not |
+| weight_kg      | Pokemon weight in kilograms             |
+| height_m       | Pokemon height in metres                |
+| pokedex_number | Index of pokemon entry in the pokedex   |
 
 ## Data Cleaning
 
-The data did not need any cleaning or preprocessing to be used.
+The data did not need any cleaning or preprocessing to be used, for the functions included in this app preprocessed any catagorical data and all used models used columns without any missing values.
 
 ------------------------------------------------------------------------
 
 # Packages Used
 
-- `shiny`
-- `dplyr`
-- `ggplot2`
-- `fmsb`
-- `glmnet`
+-   `shiny`
+-   `dplyr`
+-   `ggplot2`
+-   `fmsb`
+-   `glmnet`
