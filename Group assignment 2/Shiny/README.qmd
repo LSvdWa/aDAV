@@ -16,12 +16,12 @@ format:
 
 ## Purpose
 
-This app can be used for comparing the stats of two pokemon, seeing how two base stats correlate to each other, and learning about how well one stat can be used to predict another stat depending on the size of the train split. The app can be used by anyone interested in pokemon and the correlation of core mechanics, or anyone who wants to learn about the effects of different train splits with a fun example.
+This app can be used for comparing the performance data of two Pokemon, seeing how two base metrics correlate with each other, and learning about how well one attribute can be used to predict another attribute depending on the size of the train split. The app can be used by anyone interested in Pokemon and the correlation of core mechanics, or anyone who wants to learn about the effects of different train splits with a fun example.
 
 ## Main Features
 
--   Feature 1: Comparing two pokemon stat-wise.
--   Feature 2: Finding the correlation between two base stats.
+-   Feature 1: Comparing the metrics of two chosen Pokemon.
+-   Feature 2: Finding the correlation between two attributes.
 -   Feature 3: Learning about the effect of different train splits.
 
 ------------------------------------------------------------------------
@@ -30,7 +30,7 @@ This app can be used for comparing the stats of two pokemon, seeing how two base
 
 ## Design Goals
 
-When designing this app, the key principles that guided development are accessibility, clear visual communication and simplicity over feature richness. The app is designed to be usable by anyone, regardless of their shiny knowledge or pokemon knowledge, as it is easy to figure out how inputs affect the plots. The visual communication is guided by short texts explaining what each input is and by going for simplicity over feature richness, the plots are easy to interpret.
+When designing this app, the key principles that guided development are accessibility, clear visual communication and simplicity over feature richness. The app is designed to be usable by anyone, regardless of their shiny knowledge or Pokemon knowledge, as it is easy to figure out how inputs affect the plots. The visual communication is guided by short texts explaining what each input is and by going for simplicity over feature richness, the plots are easy to interpret.
 
 ## User Workflow
 
@@ -48,25 +48,25 @@ The app uses a layout where a sidebar on the left is used for inputs, and the ma
 
 **Purpose**
 
-The first graph provides insight in how different pokemon compare in stats.
+The first graph provides insight in how different Pokemon compare in stats.
 
 **Why this chart type?**
 
-A radar chart was chosen to recreate the original pokemon feel, as this can also be found in multiple pokemon games. As radar charts are not good visualizations for interpreting absolute values, a bar chart option was added to still allow for proper comparison if desired. The barchart also allows for more insight in how certain stats are on a different scale than others, as a radar chart uses normalized values. The bar chart is made horizontal to allow for a cleaner look with the stat labels next to the bars.
+A radar chart was chosen to recreate the original Pokemon feel, as this can also be found in multiple Pokemon games. As radar charts are not good visualizations for interpreting absolute values, a bar chart option was added to still allow for proper comparison if desired. The bar chart also allows for more insight in how certain stats are on a different scale than others, as a radar chart uses normalized values. The bar chart is made horizontal to allow for a cleaner look with the stat labels next to the bars.
 
 **Alternatives considered**
 
-An alternative considered is two barcharts where the left one is flipped horizontally, so the y-axes could be merged. This was not done as it would make adding labels to the different stats inconvenient for both development and readability.
+An alternative considered is two bar charts where the left one is flipped horizontally, so the y-axes could be merged. This was not done as it would make adding labels to the different stats inconvenient for both development and readability.
 
 #### Second graph: Scatterplot with linear regression
 
 **Purpose**
 
-The scatterplot shows how two stats are distributed over pokemon, and the linear regression makes it easy to see how two stats are correlated.
+The scatterplot shows how two stats are distributed over Pokemon, and the linear regression makes it easy to see how two stats are correlated.
 
 **Why this chart type?**
 
-The scatterplot clearly shows the distribution of different pokemon across two dimensions, while also being a good chart type to include a linear regression model.
+The scatterplot clearly shows the distribution of different Pokemon across two dimensions, while also being an appropriate chart type to include a linear regression model. A scatterplot is the most suitable visualization presenting linear relationship between two continuous variables. It allows to clearly observe the direction and strength of the relationship. Moreover, by using scatterplot it is feasible to show latent features of relationship e.g. clustering and outliers. Finally scatterplot seems the most suitable chart type to adopt interactive tools. Through the implementation of different colors representing interaction term features of each category can be clearly shown.
 
 **Alternatives considered**
 
@@ -80,7 +80,7 @@ The third graph is used to compare LASSO and Ridge regression.
 
 **Why this graph?**
 
-A simple bar chart was chosen as this allows for easy comparison while not creating visual clutter.
+A bar chart was chosen as this allows for clear comparison between two values. Considering the goal of graphic comparison of two quantiles using bar chart is the most suitable. The difference of height of two columns makes it clear and easy to detect the performance gap. Adopting two different colors for each test set results in even clearer distinction of the values. Eventually, the bar chart is friendly for using interactive tools. Adjusting the the train-test split proportion by an interactive slider produce immediate height change of the columns.
 
 **Alternatives considered**
 
