@@ -1,6 +1,6 @@
 library(shiny)
 
-
+# data loading
 data <- read.csv("./pokemon.csv")
 
 

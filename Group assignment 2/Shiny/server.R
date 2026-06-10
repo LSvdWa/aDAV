@@ -4,14 +4,19 @@ library(dplyr)
 library(ggplot2)
 library(glmnet)
 
+# data loading
+data <- read.csv("./pokemon.csv")
 
 function(input, output, session) {
-
-  # data loading
-  data <- read.csv("./pokemon.csv")
   
   # the radar chart or two bar charts
   output$comparisonPlot <- renderPlot({
+    
+    # valide the choice of two different Pokemon
+    validate(
+      need(input$pokeName != input$pokeName1,
+           "Please select two different Pokemon.")
+    )
     
     # preprocessing
     stat_df <- data %>%
@@ -150,30 +155,29 @@ function(input, output, session) {
            ". Difference = ", abs(poke1$base_total - poke2$base_total))
   })
   
-  # this makes the final second plot
+  # making the second plot
   output$scatterPlot <- renderPlot({
     
     df <- filteredData()
-    if (input$Colour != "None") {
-      var_colour <- df[[input$Colour]]
-    }
-    else {
-      var_colour <- c("Select a colour")
+    
+    # build basic plot without color
+    p <- ggplot(data = df,
+                aes_string(x = input$xStat,
+                           y = input$yStat)) +
+      geom_point(size = 3, alpha = 0.7) +
+      labs(title = paste(input$xStat, "vs", input$yStat),
+           x = input$xStat,
+           y = input$yStat) +
+      geom_smooth(method = "lm", aes(group = 1), colour = "black") +
+      theme_minimal()
+    
+    # add color layer if one is selected
+    if(input$Colour != "None") {
+      p <- p + aes_string(colour = paste0("as.factor(", input$Colour, ")")) +
+        labs(colour = input$Colour)
     }
     
-    ggplot(data=df,
-           aes_string(x = input$xStat,
-                      y = input$yStat,
-                      colour = as.factor(var_colour))) +
-      geom_point(size = 3, alpha = 0.7) +
-      labs(title = paste(input$xStat, 
-                         "vs", 
-                         input$yStat),
-           x = input$xStat,
-           y = input$yStat,
-           colour = input$Colour) +
-      geom_smooth(method="lm", aes(group=1), colour="black") +
-      theme_minimal()
+    p
   })
   
   #interactive text about regression line
